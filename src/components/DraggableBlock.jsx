@@ -1,14 +1,18 @@
 import { useState } from "react"
 
 const DraggableBlock = () => { 
-    const [position, setPosition] = useState({x: 120, y: 200});
+    const [position, setPosition] = useState({x: 0, y: 0});
     
-    const downMouseHandler = () => { 
-        document.addEventListener('mousemove', (params) => { 
-            const posX = params.clientX;
-            const posY = params.clientY;
-            setPosition({x: posX, y: posY});
-        })
+    const mouseMove = (event) => setPosition({x: event.clientX, y: event.clientY})
+
+    const downMouseHandler = () => {
+        document.addEventListener('mousemove', mouseMove);
+        document.addEventListener("mouseup", outMouseHandler);
+    }
+
+    const outMouseHandler = () => { 
+        document.removeEventListener('mousemove', mouseMove);
+        document.removeEventListener('mouseup', outMouseHandler);
     }
 
     return(
@@ -16,13 +20,15 @@ const DraggableBlock = () => {
             style={{
                 position: 'absolute',
                 left: position.x + 'px', 
-                top: position.y + 'px'
+                top: position.y + 'px',
+                cursor: 'move'
             }}
-            className='d-flex border border-2 border-success bg-success bg-opacity-50'
+            className='d-flex border rounded-3 p-2 border-2 border-success bg-success bg-opacity-25'
             onMouseDown={downMouseHandler}
+            onMouseOut={outMouseHandler}
         >
             <div className='container text-center'>
-                <span>Начало</span>
+                <span className="text-success">Начало</span>
             </div>
         </div>
     )
